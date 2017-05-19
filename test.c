@@ -4,19 +4,21 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include "apue.h"
+#include <fcntl.h>
 #include <errno.h>
+
 
 int main ()
 {
-    char buf[1024];
-    fgets(buf, 1024, stdin);
-    buf[strlen(buf)-1] = 0;
-    printf("Input command: ");
-    if ( execlp(buf, buf, (char*)0) == -1 ){
-        perror("error exec!");
+    int fd;
+    int buf;
+    if ((fd=open("tt.lock", O_CREAT|O_WRONLY, FILE_MODE)) < 0) {
+        err_sys("open error");
     }
-    printf("true end\n");
-    int sum = 0;
-    printf ("sum = %d\n", ++sum);
+    int num = 'a';
+    for(int i=0; i<1000; ++i) {
+        write(fd, &num, 1);
+    }
     return 0;
 }
